@@ -23,7 +23,7 @@
           openhab-addons = final.callPackage ./openhab-addons.nix {};
         };
 
-        overlays.default = overlays.openhab;
+        overlays.default = self.overlays.openhab;
         
         packages = forAllSystems (system:
           {
