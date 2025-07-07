@@ -17,11 +17,13 @@
       nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; overlays = [ self.overlay ]; });
     in
       {
-        overlay = final: prev: {
+        overlays."openhab" = final: prev: {
           jdk-openhab = final.callPackage ./jdk.nix {};
           openhab = final.callPackage ./openhab.nix {};
           openhab-addons = final.callPackage ./openhab-addons.nix {};
         };
+
+        overlays.default = overlays.openhab;
         
         packages = forAllSystems (system:
           {
