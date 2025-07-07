@@ -1,32 +1,32 @@
 {
-    description = "Simple packaging of OpenHAB home automation service";
+  description = "Simple packaging of OpenHAB home automation service";
 
-    inputs = {
-        nixpkgs.url = "github:NixOS/nixpkgs";
-        flake-utils.url = "github:numtide/flake-utils";
-    };
+  inputs = {
+    flake-utils.url = "github:numtide/flake-utils";
+  };
 
-    outputs = { 
-        flake-utils, 
-        nixpkgs, 
-        ... 
-    }: let
-        overlay = final: prev: rec {
-            jdk-openhab = prev.callPackage ./jdk.nix {};
-            openhab = prev.callPackage ./openhab.nix { };
-            openhab-addons = prev.callPackage ./openhab-addons.nix {};
+  outputs = { 
+    self,
+    flake-utils, 
+    nixpkgs, 
+    ... 
+  }:
+    let
+      out = system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          appliedOverlay = self.overlays.default pkgs pkgs;
+        in
+        {
+          packages.openhab = appliedOverlay.openhab;
         };
 
-        eachSystem = nixpkgs.lib.genAttrs ( [ "x86_64-linux" "aarch64-linux" ] );
-    in {
-        overlays.default = overlay;
-
-        formatter = eachSystem (system: nixpkgs.legacyPackages.${system}.alejandra);
-
-        packages = eachSystem (system: {
-            jdk-openhab = nixpkgs.legacyPackages.${system}.callPackage ./jdk.nix {};
-            openhab = nixpkgs.legacyPackages.${system}.callPackage ./openhab.nix {};
-            openhab-addons = nixpkgs.legacyPackages.${system}.callPackage ./openhab-addons.nix {};
-        });
+    in
+      flake-utils.lib.eachDefaultSystem out // {
+        overlays.default = final: prev: {
+          jdk-openhab = prev.callPackage ./jdk.nix {};
+          openhab = prev.callPackage ./openhab.nix {};
+          openhab-addons = prev.callPackage ./openhab-addons.nix {};
+        };
     };
 }
