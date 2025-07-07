@@ -26,7 +26,7 @@
         packages = forAllSystems (system:
           {
             inherit (nixpkgsFor.${system}) openhab;
-          };
+          });
 
         defaultPackage = forAllSystems (system: self.packages.${system}.openhab);
       };
