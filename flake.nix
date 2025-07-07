@@ -12,9 +12,9 @@
         ... 
     }: let
         overlay = final: prev: rec {
-            jdk-openhab = final.callPackage ./jdk.nix {};
-            openhab = final.callPackage ./openhab.nix { };
-            openhab-addons = final.callPackage ./openhab-addons.nix {};
+            jdk-openhab = prev.callPackage ./jdk.nix {};
+            openhab = prev.callPackage ./openhab.nix { };
+            openhab-addons = prev.callPackage ./openhab-addons.nix {};
         };
 
         eachSystem = nixpkgs.lib.genAttrs ( [ "x86_64-linux" "aarch64-linux" ] );
@@ -24,9 +24,9 @@
         formatter = eachSystem (system: nixpkgs.legacyPackages.${system}.alejandra);
 
         packages = eachSystem (system: {
-            jdk-openhab = (pkgs system).jdk-openhab;
-            openhab = (pkgs system).openhab;
-            openhab-addons = (pkgs system).openhab-addons;
+            jdk-openhab = nixpkgs.legacyPackages.${system}.callPackage ./jdk.nix {};
+            openhab = nixpkgs.legacyPackages.${system}.callPackage ./openhab.nix {};
+            openhab-addons = nixpkgs.legacyPackages.${system}.callPackage ./openhab-addons.nix {};
         });
     };
 }
