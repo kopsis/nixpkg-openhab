@@ -12,42 +12,21 @@
     ... 
   }:
     let
-      supportedSystems = [ "x86_64-linux" ];
-      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; overlays = [ self.overlay ]; });
+      out = system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          appliedOverlay = self.overlays.default pkgs pkgs;
+        in
+        {
+          packages.openhab = appliedOverlay.openhab;
+        };
+
     in
-      {
+      flake-utils.lib.eachDefaultSystem out // {
         overlays.default = final: prev: {
           jdk-openhab = final.callPackage ./jdk.nix {};
           openhab = final.callPackage ./openhab.nix {};
           openhab-addons = final.callPackage ./openhab-addons.nix {};
         };
-
-        packages = forAllSystems (system:
-          {
-            inherit (nixpkgsFor.${system}) openhab;
-          });
-
-        defaultPackage = forAllSystems (system: self.packages.${system}.openhab);
-      };
-
-
-  #    let
-  #      out = system:
-  #        let
-  #          pkgs = nixpkgs.legacyPackages.${system};
-  #          appliedOverlay = self.overlays.default pkgs pkgs;
-  #        in
-  #        {
-  #          packages.openhab = appliedOverlay.openhab;
-  #        };
-  #
-  #    in
-  #      flake-utils.lib.eachDefaultSystem out // {
-  #        overlays.default = final: prev: {
-  #          jdk-openhab = final.callPackage ./jdk.nix {};
-  #          openhab = final.callPackage ./openhab.nix {};
-  #          openhab-addons = final.callPackage ./openhab-addons.nix {};
-  #        };
-  #    };
+    };
 }
