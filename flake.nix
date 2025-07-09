@@ -25,9 +25,9 @@
     in
       flake-utils.lib.eachDefaultSystem out // {
         overlays.default = final: prev: {
-          jdk-openhab = prev.callPackage ./jdk.nix {};
-          openhab = prev.callPackage ./openhab.nix {};
-          openhab-addons = prev.callPackage ./openhab-addons.nix {};
+          jdk-openhab = final.callPackage ./jdk.nix {};
+          openhab = final.callPackage ./openhab.nix {};
+          openhab-addons = final.callPackage ./openhab-addons.nix {};
         };
     };
 }
