@@ -20,5 +20,6 @@
             openhab = (pkgs system).openhab;
             openhab-addons = (pkgs system).openhab-addons;
         };
+        defaultPackage = (pkgs system).openhab;
     });
 }
