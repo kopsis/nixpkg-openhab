@@ -50,8 +50,8 @@ similar…)
 
 ```console
 $ mkdir -p ~/openhab/userdata/etc
-$ cp -rv $(nix build github:nagisa/nixpkg-openhab)/userdata/* ~/openhab/userdata
-$ cp -rv $(nix build github:nagisa/nixpkg-openhab)/conf ~/openhab/
+$ cp -rv $(nix build github:nagisa/nixpkg-openhab --print-out-paths)/userdata/* ~/openhab/userdata
+$ cp -rv $(nix build github:nagisa/nixpkg-openhab --print-out-paths)/conf ~/openhab/
 $ chmod -R +rw ~/openhab
 ```
 

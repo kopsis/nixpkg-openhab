@@ -63,6 +63,7 @@ in stdenv.mkDerivation rec {
         #!${bash}/bin/sh
         export PATH="\''$PATH:$extraPath"
         EOF
+        chmod +x "$out/$exe".new
         mv "$out/$exe".new "$out/$exe"
         done
 
