@@ -1,8 +1,8 @@
-{ buildPlatform, hostPlatform, jdk17, which, zip, buildPackages }:
+{ buildPlatform, hostPlatform, jdk21, which, zip, buildPackages }:
 
 if buildPlatform == hostPlatform
-then jdk17
-else (jdk17.override {
+then jdk21
+else (jdk21.override {
     # libIDL does not compile in cross-compile scenarios.
     enableGnome2 = false;
 }).overrideAttrs (old: {
@@ -13,6 +13,6 @@ else (jdk17.override {
     configureFlags = old.configureFlags ++ [
         "--with-jtreg=no"
         "--disable-hotspot-gtest"
-        "--with-build-jdk=${buildPackages.jdk17}"
+        "--with-build-jdk=${buildPackages.jdk21}"
     ];
 })
